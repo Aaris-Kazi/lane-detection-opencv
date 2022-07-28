@@ -39,7 +39,6 @@ def capture(img):
     color_image_line = cv2.addWeighted(lane_image, 0.8, clines, 1, 1)
     return color_image_line
 
-
 def image():
     status = glob.glob('test_images/*.jpg')
     if status:
@@ -78,7 +77,7 @@ def video():
         while cap.isOpened():
             try:
                 _, frame = cap.read()
-                prev, fps = showfps(frame, prev, fps)
+                # prev, fps = showfps(frame, prev, fps)
                 hsv = filter_colors(frame)
                 temp = dims(hsv, temp)
                 blur = cv2.GaussianBlur(hsv, (5, 5), 0)  # to reduce the noise
