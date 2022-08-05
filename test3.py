@@ -4,7 +4,7 @@ import glob
 import time
 from showLines import show_lines
 from show_combo_lines import combo_lines
-from fps import showfps
+from fps import advance_fps
 from showDimensions import dims
 from showFilters import filter_colors
 from combo_lines import combo
@@ -71,13 +71,14 @@ def video():
     status = glob.glob(path)
     if status:
         prev = time.time()
+        # prev = 0
         fps = 0.0
         temp = 0
         cap = cv2.VideoCapture(path)
         while cap.isOpened():
             try:
                 _, frame = cap.read()
-                # prev, fps = showfps(frame, prev, fps)
+                prev = advance_fps(frame, time.time(), prev, cv2)
                 hsv = filter_colors(frame)
                 temp = dims(hsv, temp)
                 blur = cv2.GaussianBlur(hsv, (5, 5), 0)  # to reduce the noise
@@ -130,6 +131,6 @@ def camera():
 
 
 if __name__ == '__main__':
-    image()
-    # video()
+    # image()
+    video()
 #     camera()
