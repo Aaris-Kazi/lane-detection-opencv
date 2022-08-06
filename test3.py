@@ -4,10 +4,10 @@ import glob
 import time
 from showLines import show_lines
 from show_combo_lines import combo_lines
+from combo_lines import combo
 from fps import advance_fps
 from showDimensions import dims
 from showFilters import filter_colors
-from combo_lines import combo
 import matplotlib.pyplot as plt
 
 
@@ -28,14 +28,14 @@ def area_of_interest(img):
 
 def capture(img):
     lane_image = np.copy(img)
-    hsv = filter_colors(lane_image)
+    hsv = filter_colors(lane_image, cv2, np)
     blur = cv2.GaussianBlur(hsv, (5, 5), 0)
     edges = cv2.Canny(blur, 50, 150)
     aoi = area_of_interest(edges)
     lines = cv2.HoughLinesP(aoi, 2, np.pi / 180, 30, np.array([]), 100, 180)
-    # avg_lines= combo_lines(lane_image, lines)
-    combo(lines)
-    clines = show_lines(lane_image, lines)
+    avg_lines= combo_lines(lane_image, lines)
+    # c_lines = combo(lines)
+    clines = show_lines(lane_image, avg_lines, cv2, np)
     color_image_line = cv2.addWeighted(lane_image, 0.8, clines, 1, 1)
     return color_image_line
 
@@ -79,7 +79,7 @@ def video():
             try:
                 _, frame = cap.read()
                 prev = advance_fps(frame, time.time(), prev, cv2)
-                hsv = filter_colors(frame)
+                hsv = filter_colors(frame, cv2, np)
                 temp = dims(hsv, temp)
                 blur = cv2.GaussianBlur(hsv, (5, 5), 0)  # to reduce the noise
                 edges = cv2.Canny(blur, 50, 150)  # to find the edges
@@ -87,7 +87,7 @@ def video():
                 lines = cv2.HoughLinesP(aoi, 2, np.pi / 180, 100, np.array([]), 20, 5)
                 # lines = cv2.HoughLinesP(aoi, 2, np.pi/180, 30, np.array([]), 100, 180)
                 avg_lines = combo_lines(frame, lines)
-                clines = show_lines(frame, avg_lines)
+                clines = show_lines(frame, avg_lines, cv2, np)
                 color_image_line = cv2.addWeighted(frame, 0.9, clines, 1, 1)
                 res = cv2.resize(color_image_line, (1280, 640))
                 cv2.imshow('Window', res)  # to show the outpqut
@@ -109,7 +109,7 @@ def camera():
     while cap.isOpened():
         try:
             _, frame = cap.read()
-            prev, fps = showfps(frame, prev, fps)
+            prev, fps = advance_fps(frame, prev, fps)
             hsv = filter_colors(frame)
             temp = dims(hsv, temp)
             blur = cv2.GaussianBlur(hsv, (5, 5), 0)  # to reduce the noise
@@ -131,6 +131,6 @@ def camera():
 
 
 if __name__ == '__main__':
-    # image()
-    video()
+    image()
+    # video()
 #     camera()

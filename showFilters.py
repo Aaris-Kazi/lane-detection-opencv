@@ -1,9 +1,5 @@
-import cv2
-# from cv2 import inRange
-import numpy as np
 
-
-def filter_colors(image):
+def filter_colors(image, cv2, np):
     # Filter white pixels
     white_threshold = 200  # 130
     lower_white = np.array([white_threshold, white_threshold, white_threshold], dtype=np.uint8)

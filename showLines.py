@@ -1,6 +1,5 @@
-import cv2
-import numpy as np
-def show_lines(img, lines):
+
+def show_lines(img, lines, cv2, np):
     line_image = np.zeros_like(img) # creating a copy of image with arrays of 0
     if lines is not None:
         for line in lines:
