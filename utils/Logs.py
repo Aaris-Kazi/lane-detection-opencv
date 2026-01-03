@@ -22,6 +22,7 @@ class Logs():
         self.log.info("Initializing logs")
         self._initialized = True
 
+
     def getLogger(self) -> logging.Logger:
         return self.log
     
