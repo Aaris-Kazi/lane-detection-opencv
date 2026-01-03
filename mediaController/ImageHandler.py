@@ -4,6 +4,8 @@ from glob import glob
 from constants.Literals import PATH
 from cv2 import imread, imshow
 import matplotlib.pyplot as plt
+
+
 class ImageHandler(MediaHandler):
     
     def handler(self):
