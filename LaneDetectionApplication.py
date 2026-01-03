@@ -1,6 +1,8 @@
 from typing import Optional
 from utils import Logs
 from mediaController import MediaHandler, VideoHandler, ImageHandler, CameraHandler
+
+
 class LaneDetectionApplication():
     """
     This class is to handle the Mode of Media to be choose
@@ -18,6 +20,6 @@ class LaneDetectionApplication():
         elif options == 3:
             mediaHandler = CameraHandler
         else:
-            print("You choose wrong option")
+            log.error("Invalid Option Selected")
 
         mediaHandler.handler(self)
