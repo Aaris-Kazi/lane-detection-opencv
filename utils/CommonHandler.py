@@ -2,6 +2,7 @@ import time
 from cv2 import VideoCapture, destroyAllWindows, imshow, resize, waitKey, putText, FONT_HERSHEY_SIMPLEX
 
 from . import Logs
+from .ColorFilters import ColorFilters
 from constants.Literals import QUIT, WAIT_KEYS, WINDOW_SIZE
 from numpy import ndarray
 
@@ -31,6 +32,8 @@ class CommonHandler:
         logs = Logs()
         log = logs.get_Logger("CommonHandler")
         prev: float = time.perf_counter()
+        colorFilters = ColorFilters()
+        
 
         # Implementation for capturing media from the source
         while capture.isOpened():
@@ -39,6 +42,7 @@ class CommonHandler:
                 frame: ndarray = None
                 _, frame = capture.read()
                 frame, prev = CommonHandler.showFpsMethod(frame, time.perf_counter(), prev)
+                frame: ndarray = colorFilters.filter_colors(frame)
                 res = resize(frame, WINDOW_SIZE)
                 imshow(windowName, res)
                 if waitKey(WAIT_KEYS) & 0xFF == ord(QUIT):
