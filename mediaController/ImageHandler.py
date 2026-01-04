@@ -8,7 +8,7 @@ from numpy import ndarray
 
 
 class ImageHandler(MediaHandler):
-    
+
     def handler(self):
         logs = Logs()
         colorFilters = ColorFilters()
@@ -20,7 +20,8 @@ class ImageHandler(MediaHandler):
             try:
                 img: ndarray = imread(img_path)
                 img: ndarray = colorFilters.filter_colors(img)
-                imshow(img)
+                edges: ndarray = colorFilters.blur_frame_edge(img)
+                imshow(edges)
                 show()
 
             except Exception as e:
