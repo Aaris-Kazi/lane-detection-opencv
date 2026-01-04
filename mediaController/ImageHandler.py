@@ -1,5 +1,5 @@
 from . import MediaHandler
-from utils import Logs, ColorFilters
+from utils import Logs, ColorFilters, CommonHandler
 from glob import glob
 from constants.Literals import PATH
 from cv2 import imread
@@ -12,6 +12,7 @@ class ImageHandler(MediaHandler):
     def handler(self):
         logs = Logs()
         colorFilters = ColorFilters()
+
         log = logs.get_Logger("ImageHandler")
         log.info("Image Handler Initialized")
 
@@ -21,7 +22,8 @@ class ImageHandler(MediaHandler):
                 img: ndarray = imread(img_path)
                 img: ndarray = colorFilters.filter_colors(img)
                 edges: ndarray = colorFilters.blur_frame_edge(img)
-                imshow(edges)
+                aoi: ndarray = CommonHandler.area_of_interest(edges)
+                imshow(aoi)
                 show()
 
             except Exception as e:
