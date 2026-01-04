@@ -43,7 +43,8 @@ class CommonHandler:
                 _, frame = capture.read()
                 frame, prev = CommonHandler.showFpsMethod(frame, time.perf_counter(), prev)
                 frame: ndarray = colorFilters.filter_colors(frame)
-                res = resize(frame, WINDOW_SIZE)
+                edges: ndarray = colorFilters.blur_frame_edge(frame)
+                res = resize(edges, WINDOW_SIZE)
                 imshow(windowName, res)
                 if waitKey(WAIT_KEYS) & 0xFF == ord(QUIT):
                     log.info("Quitting media capture")

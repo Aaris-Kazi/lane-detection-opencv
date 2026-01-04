@@ -7,10 +7,11 @@ from show_combo_lines import combo_lines
 from combo_lines import combo
 from fps import advance_fps
 from showDimensions import dims
-from showFilters import filter_colors
+# from showFilters import filter_colors
+from utils import ColorFilters
 import matplotlib.pyplot as plt
 
-
+colorFilters = ColorFilters()
 def area_of_interest(img):
     try:
         ht = img.shape[0]
@@ -28,9 +29,8 @@ def area_of_interest(img):
 
 def capture(img):
     lane_image = np.copy(img)
-    hsv = filter_colors(lane_image, cv2, np)
-    blur = cv2.GaussianBlur(hsv, (5, 5), 0)
-    edges = cv2.Canny(blur, 50, 150)
+    hsv = colorFilters.filter_colors(lane_image)
+    edges = colorFilters.blur_frame_edge(hsv)
     aoi = area_of_interest(edges)
     lines = cv2.HoughLinesP(aoi, 2, np.pi / 180, 30, np.array([]), 100, 180)
     avg_lines= combo_lines(lane_image, lines)
@@ -79,7 +79,7 @@ def video():
             try:
                 _, frame = cap.read()
                 prev = advance_fps(frame, time.time(), prev, cv2)
-                hsv = filter_colors(frame, cv2, np)
+                hsv = colorFilters.filter_colors(frame)
                 temp = dims(hsv, temp)
                 blur = cv2.GaussianBlur(hsv, (5, 5), 0)  # to reduce the noise
                 edges = cv2.Canny(blur, 50, 150)  # to find the edges
@@ -110,7 +110,7 @@ def camera():
         try:
             _, frame = cap.read()
             prev, fps = advance_fps(frame, prev, fps)
-            hsv = filter_colors(frame)
+            hsv = colorFilters.filter_colors(frame)
             temp = dims(hsv, temp)
             blur = cv2.GaussianBlur(hsv, (5, 5), 0)  # to reduce the noise
             edges = cv2.Canny(blur, 50, 150)  # to find the edges

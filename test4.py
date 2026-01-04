@@ -29,7 +29,7 @@ def main():
         _, frame = cap.read()
         prev = advance_fps(frame, time.time(), prev, cv2)
         hsv: ndarray = colorFilters.filter_colors(frame)
-        edges = cv2.Canny(hsv, 50, 150)  # to find the edges
+        edges = colorFilters.blur_frame_edge(hsv)
         aoi = area_of_interest_video(edges)
         lines = cv2.HoughLinesP(aoi, 2, np.pi / 180, 100, np.array([]), 20, 5)
                 # lines = cv2.HoughLinesP(aoi, 2, np.pi/180, 30, np.array([]), 100, 180)
