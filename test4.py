@@ -1,10 +1,11 @@
 import cv2
 import numpy as np
+from numpy import ndarray
 from fps import advance_fps
 import time
-from showFilters import filter_colors
 from showLines import show_lines
 from show_combo_lines import combo_lines
+from utils import ColorFilters
 
 def area_of_interest_video(img):
     ht = img.shape[0]
@@ -21,12 +22,13 @@ def area_of_interest_video(img):
 def main():
     path = 'lane1_1.mp4'
     cap = cv2.VideoCapture(path)
+    colorFilters = ColorFilters()
     prev = 0
     while cap.isOpened():
         
         _, frame = cap.read()
         prev = advance_fps(frame, time.time(), prev, cv2)
-        hsv = filter_colors(frame, cv2, np)
+        hsv: ndarray = colorFilters.filter_colors(frame)
         edges = cv2.Canny(hsv, 50, 150)  # to find the edges
         aoi = area_of_interest_video(edges)
         lines = cv2.HoughLinesP(aoi, 2, np.pi / 180, 100, np.array([]), 20, 5)
