@@ -8,30 +8,17 @@ from combo_lines import combo
 from fps import advance_fps
 from showDimensions import dims
 # from showFilters import filter_colors
-from utils import ColorFilters
+from utils import ColorFilters, CommonHandler
 import matplotlib.pyplot as plt
 
 colorFilters = ColorFilters()
-def area_of_interest(img):
-    try:
-        ht = img.shape[0]
-        wt = img.shape[1]
-        triangle = np.array([
-            [(0, ht - 60), (wt, ht - 60), (740, 420), (540, 420)]
-        ])
-        mask = np.zeros_like(img)  # creating a copy of image with arrays of 0
-        cv2.fillPoly(mask, triangle, 255)  # function that create polygons of visible region
-        masked_image = cv2.bitwise_and(img, mask)  # it will hide other data and show only the visible part
-        return masked_image
-    except cv2.error as e:
-        print(e)
 
 
 def capture(img):
     lane_image = np.copy(img)
     hsv = colorFilters.filter_colors(lane_image)
     edges = colorFilters.blur_frame_edge(hsv)
-    aoi = area_of_interest(edges)
+    aoi = CommonHandler.area_of_interest(edges)
     lines = cv2.HoughLinesP(aoi, 2, np.pi / 180, 30, np.array([]), 100, 180)
     avg_lines= combo_lines(lane_image, lines)
     # c_lines = combo(lines)
@@ -83,7 +70,7 @@ def video():
                 temp = dims(hsv, temp)
                 blur = cv2.GaussianBlur(hsv, (5, 5), 0)  # to reduce the noise
                 edges = cv2.Canny(blur, 50, 150)  # to find the edges
-                aoi = area_of_interest_video(edges)
+                aoi = CommonHandler.area_of_interest(edges)
                 lines = cv2.HoughLinesP(aoi, 2, np.pi / 180, 100, np.array([]), 20, 5)
                 # lines = cv2.HoughLinesP(aoi, 2, np.pi/180, 30, np.array([]), 100, 180)
                 avg_lines = combo_lines(frame, lines)
@@ -114,7 +101,7 @@ def camera():
             temp = dims(hsv, temp)
             blur = cv2.GaussianBlur(hsv, (5, 5), 0)  # to reduce the noise
             edges = cv2.Canny(blur, 50, 150)  # to find the edges
-            aoi = area_of_interest_video(edges)
+            aoi = CommonHandler.area_of_interest(edges)
             lines = cv2.HoughLinesP(aoi, 2, np.pi / 180, 100, np.array([]), 20, 5)
             # # lines = cv2.HoughLinesP(aoi, 2, np.pi/180, 30, np.array([]), 100, 180)
             avg_lines = combo_lines(frame, lines)

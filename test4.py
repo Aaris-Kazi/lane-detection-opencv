@@ -5,18 +5,7 @@ from fps import advance_fps
 import time
 from showLines import show_lines
 from show_combo_lines import combo_lines
-from utils import ColorFilters
-
-def area_of_interest_video(img):
-    ht = img.shape[0]
-    wt = img.shape[1]
-    triangle = np.array([
-        [(0, ht - 60), (wt, ht - 60), (740, 420), (540, 420)]
-    ])
-    mask = np.zeros_like(img)  # creating a copy of image with arrays of 0
-    cv2.fillPoly(mask, triangle, 255)  # function that create polygons of visible region
-    masked_image = cv2.bitwise_and(img, mask)  # it will hide other data and show only the visible part
-    return masked_image
+from utils import ColorFilters, CommonHandler
 
 
 def main():
@@ -29,8 +18,8 @@ def main():
         _, frame = cap.read()
         prev = advance_fps(frame, time.time(), prev, cv2)
         hsv: ndarray = colorFilters.filter_colors(frame)
-        edges = colorFilters.blur_frame_edge(hsv)
-        aoi = area_of_interest_video(edges)
+        edges: ndarray = colorFilters.blur_frame_edge(hsv)
+        aoi: ndarray = CommonHandler.area_of_interest(edges)
         lines = cv2.HoughLinesP(aoi, 2, np.pi / 180, 100, np.array([]), 20, 5)
                 # lines = cv2.HoughLinesP(aoi, 2, np.pi/180, 30, np.array([]), 100, 180)
         avg_lines = combo_lines(aoi, lines)
